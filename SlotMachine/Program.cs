@@ -7,16 +7,23 @@ namespace SlotMachine
     {
         static void Main(string[] args)
         {
+            const int ROWS = 3;
+            const int COLUMNS = 3;
             const int RANGE_START = 1;
-            const int RANGE_END = 10;
-            const int ROW_ONE = 1;
-            const int FIRST_CELL = 1;
+            const int RANGE_END = 3;
+            const int ROW_ONE = 0;
+            const int ROW_TWO = 1;
+            const int ROW_THREE = 2;
+            const int CELL_ONE = 0;
+            const int CELL_TWO = 1;
+            const int CELL_THREE = 2;
+            const int VALUE_COUNT_MAX = 3;
             const double MIN_BET = 1;
             
             double money;
             double bet;
             Random rnd = new Random();
-            int[,] numbers = new int[3,3]; 
+           int[,] numbers = new int[ROWS,COLUMNS]; 
             
             Console.Clear();
             
@@ -78,37 +85,174 @@ namespace SlotMachine
                     Console.WriteLine();
                 }
 
+                
                 int valueCount = 0;
-                int valueToMatch = numbers[ROW_ONE,FIRST_CELL];
+                bool columnOneMatch = false;
+                bool columnTwoMatch = false;
+                bool columnThreeMatch = false;
+                bool topRowMatch = false;
+                bool middleRowMatch = false;
+                bool bottomRowMatch = false;
+                bool diagonalMatch = false;
+                bool win = false;
                 for(int i = 0; i < numbers.GetLength(0); i++)
                 {   
+                    //Check vertical match in the first column
                     for(int j = 0; j < numbers.GetLength(1); j++)
                     {
-                        // If the numbers the second row are the same increase the count else set to 0
-                        if(numbers[ROW_ONE,j] == valueToMatch)
+                        if(numbers[j,CELL_ONE] == numbers[ROW_ONE,CELL_ONE])
                         {
                             valueCount++;
+                            if(valueCount == VALUE_COUNT_MAX)
+                            {
+                                valueCount = 0;
+                                columnOneMatch = true;
+                            }
                         }
                         else 
                         {
                             valueCount = 0;
+                            break;
                         }
                     }
 
-                    //If valueCount equqls 3, player wins and money is added to the available funds
-                    if(valueCount == 3)
+                    //Check vertical match in the second column
+                    for(int j = 0; j < numbers.GetLength(1); j++)
                     {
-                        double winAmount = bet * 2;
+                        if(numbers[j,CELL_TWO] == numbers[ROW_ONE,CELL_TWO])
+                        {
+                            valueCount++;
+                            if(valueCount == VALUE_COUNT_MAX)
+                            {
+                                valueCount = 0;
+                                columnTwoMatch = true;
+                            }
+                        }
+                        else 
+                        {
+                            valueCount = 0;
+                            break;
+                        }
+                    }
+
+                    //Check vertical match in the third column
+                    for(int j = 0; j < numbers.GetLength(1); j++)
+                    {
+                        if(numbers[j,CELL_THREE] == numbers[ROW_ONE,CELL_THREE])
+                        {
+                            valueCount++;
+                            if(valueCount == VALUE_COUNT_MAX)
+                            {
+                                valueCount = 0;
+                                columnOneMatch = true;
+                            }
+                        }
+                        else 
+                        {
+                            valueCount = 0;
+                            break;
+                        }
+                    }
+
+                    //Check top row
+                    for(int j = 0; j < numbers.GetLength(1); j++)
+                    {
+                        if(numbers[ROW_ONE,j] == numbers[ROW_ONE,CELL_ONE])
+                        {     
+                           valueCount++;
+                            if(valueCount == VALUE_COUNT_MAX)
+                            {
+                                valueCount = 0;
+                                topRowMatch = true;
+                            }
+                        }
+                        else 
+                        {
+                            valueCount = 0;
+                            break;
+                        }
+                    }
+                    
+                    //Check middle row
+                    for(int j = 0; j < numbers.GetLength(1); j++)
+                    {
+                        if(numbers[ROW_TWO,j] == numbers[ROW_TWO,CELL_ONE])
+                        {           
+                            valueCount++;
+                            if(valueCount == VALUE_COUNT_MAX)
+                            {
+                                valueCount = 0;
+                                middleRowMatch = true;
+                            }
+                        }
+                        else 
+                        {
+                            valueCount = 0;
+                            break;
+                        }
+                    }
+
+                    //Check bottom row
+                    for(int j = 0; j < numbers.GetLength(1); j++)
+                    {
+                        if(numbers[ROW_THREE,j] == numbers[ROW_THREE,CELL_ONE])
+                        {
+                            valueCount++;
+                            if(valueCount == VALUE_COUNT_MAX)
+                            {
+                                valueCount = 0;
+                                bottomRowMatch = true;
+                            }
+                        }
+                        else 
+                        {
+                            valueCount = 0;
+                            break;
+                        }
+                    }
+
+                    //Diagonal match
+                    for(int j = 0; j < numbers.GetLength(1); j++)
+                    {
+                        if(numbers[ROW_TWO, CELL_TWO] == numbers[ROW_ONE,CELL_ONE] 
+                        && numbers[ROW_THREE, CELL_THREE] == numbers[ROW_ONE,CELL_ONE])
+                        {
+                            diagonalMatch = true;
+                        }
+
+                        if(numbers[ROW_TWO, CELL_TWO] == numbers[ROW_ONE,CELL_THREE] 
+                        && numbers[ROW_THREE, CELL_ONE] == numbers[ROW_ONE,CELL_THREE])
+                        {
+                            diagonalMatch = true;
+                        } 
+                    }
+
+                    //If horrizontal, vertical and diagonal matches are found jackpot condition is met
+                    if(topRowMatch && middleRowMatch && bottomRowMatch && diagonalMatch
+                    && columnOneMatch && columnTwoMatch && columnThreeMatch)
+                    {
+                        win = true;
+                        double winAmount = bet * 11;
                         money = money + winAmount;
+                        Console.WriteLine($"\t Jackpot You won: ${winAmount}");
+                        break;
+                    }
+
+                    if(topRowMatch || middleRowMatch || bottomRowMatch || diagonalMatch
+                    || columnOneMatch || columnTwoMatch || columnThreeMatch)
+                    {
+                        win = true;
+                        double winAmount = bet * 2;
+                        money += winAmount;
                         Console.WriteLine($"\t You won: ${winAmount}");
                         break;
                     }
                 }
 
                 //If valueCount is less then 3 subtract bet amount from the total money 
-                if(valueCount < 3)
+                if(!win)
                 {
-                    money = money - bet;
+                    money -= bet;
                 }
 
                 //If money is less then 1, end the game.
