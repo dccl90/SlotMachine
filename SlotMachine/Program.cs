@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Text.RegularExpressions;
 
 namespace SlotMachine
@@ -10,20 +12,17 @@ namespace SlotMachine
             const int ROWS = 3;
             const int COLUMNS = 3;
             const int RANGE_START = 1;
-            const int RANGE_END = 3;
+            const int RANGE_END = 10;
             const int ROW_ONE = 0;
-            const int ROW_TWO = 1;
-            const int ROW_THREE = 2;
-            const int CELL_ONE = 0;
-            const int CELL_TWO = 1;
-            const int CELL_THREE = 2;
-            const int VALUE_COUNT_MAX = 3;
+            const int COLUMN_ONE = 0;
             const double MIN_BET = 1;
+            const double WIN_MULTIPLIER = 2;
+            const double JACKPOT_MULTIPLIER = 10;
             
             double money;
-            double bet;
+            char playingMode;
             Random rnd = new Random();
-           int[,] numbers = new int[ROWS,COLUMNS]; 
+            int[,] numbers = new int[ROWS,COLUMNS]; 
             
             Console.Clear();
             
@@ -44,6 +43,20 @@ namespace SlotMachine
                     Console.WriteLine("\t Please enter a valid number");
                     continue;
                 }
+
+                break;
+            }
+
+            while(true)
+            {
+                Console.Write("\t Press S for Signle Line Mode or M for Multi-Line Mode: ");
+                playingMode = Console.ReadKey().KeyChar;
+                Console.WriteLine();
+                if(!playingMode.Equals('m') && !playingMode.Equals('s'))
+                {
+                    Console.WriteLine("\t Please enter S or M");
+                    continue;
+                }
                 break;
             }
 
@@ -53,11 +66,11 @@ namespace SlotMachine
                 Console.WriteLine($"\t Available Money: ${money}");
                 Console.Write("\t Enter Bet Amount {Min $1.00}: $");
                 string inputBet = Console.ReadLine();
-                bool isInputBetDouble = Double.TryParse(inputBet, out bet);
+                bool isInputBetDouble = Double.TryParse(inputBet, out double bet);
                 
                 //If the input bet is not a double continue
                 if(!isInputBetDouble){
-                    Console.WriteLine("Please enter a valid number");
+                    Console.WriteLine("\t Please enter a valid number");
                     continue;
                 }
 
@@ -85,168 +98,117 @@ namespace SlotMachine
                     Console.WriteLine();
                 }
 
-                
-                int valueCount = 0;
-                bool columnOneMatch = false;
-                bool columnTwoMatch = false;
-                bool columnThreeMatch = false;
-                bool topRowMatch = false;
-                bool middleRowMatch = false;
-                bool bottomRowMatch = false;
-                bool diagonalMatch = false;
                 bool win = false;
-                for(int i = 0; i < numbers.GetLength(0); i++)
-                {   
-                    //Check vertical match in the first column
-                    for(int j = 0; j < numbers.GetLength(1); j++)
+                if(playingMode.Equals('s')){
+                    int middleRowCheck = 0;
+                    for(int row = 0; row < ROWS; row++)
                     {
-                        if(numbers[j,CELL_ONE] == numbers[ROW_ONE,CELL_ONE])
+                        if(numbers[((ROWS -1 ) / 2), COLUMN_ONE] == numbers[((ROWS -1 ) / 2), row])
                         {
-                            valueCount++;
-                            if(valueCount == VALUE_COUNT_MAX)
-                            {
-                                valueCount = 0;
-                                columnOneMatch = true;
-                            }
+                            middleRowCheck++;
                         }
                         else 
                         {
-                            valueCount = 0;
-                            break;
+                            middleRowCheck = 0;
+                        }
+
+                        if(middleRowCheck == COLUMNS)
+                        {
+                            win = true;
+                        }
+                    }    
+                }
+
+                
+                bool jackpot = false;
+                int columnWinCheck;
+                int rowWinCheck;
+                int columnWinCount = 0;
+                int rowWinCount = 0;
+                int diagonalWinCount = 0;
+                if(playingMode.Equals('m'))
+                {
+                    for(int row = 0; row < ROWS; row++)
+                    {   
+                        columnWinCheck = 0;
+                        rowWinCheck = 0;
+                        for(int column = 0; column < COLUMNS; column++)
+                        {
+                            //Check Columns for Win
+                            if(numbers[row, 0] == numbers[column,row])
+                            {
+                                columnWinCheck++;
+                            }
+
+                            if(columnWinCheck == COLUMNS)
+                            {
+                                columnWinCount++;
+                                win = true;
+                            }
+
+                            //Check Rows for Win
+                            if(numbers[row,0] == numbers[row,column])
+                            {
+                                rowWinCheck++;
+                            }
+
+                            if(rowWinCheck == ROWS)
+                            {
+                                rowWinCount++;
+                                win = true;
+                            }
                         }
                     }
 
-                    //Check vertical match in the second column
-                    for(int j = 0; j < numbers.GetLength(1); j++)
+                    int diagonalWinCheck = 0;
+                    for(int row = 0; row < ROWS; row++)
                     {
-                        if(numbers[j,CELL_TWO] == numbers[ROW_ONE,CELL_TWO])
+                        //Check diagonal win
+                        if(numbers[ROW_ONE, COLUMN_ONE] == numbers[row,row]) 
                         {
-                            valueCount++;
-                            if(valueCount == VALUE_COUNT_MAX)
-                            {
-                                valueCount = 0;
-                                columnTwoMatch = true;
-                            }
+                            diagonalWinCheck++;
                         }
-                        else 
+                          
+                        if(diagonalWinCheck == ROWS)
                         {
-                            valueCount = 0;
-                            break;
-                        }
+                            diagonalWinCount++;
+                            win = true;
+                        }              
                     }
 
-                    //Check vertical match in the third column
-                    for(int j = 0; j < numbers.GetLength(1); j++)
+                    diagonalWinCheck = 0;
+                    for(int row = 0; row < ROWS; row++)
                     {
-                        if(numbers[j,CELL_THREE] == numbers[ROW_ONE,CELL_THREE])
+                        //Check diagonal win
+                        if(numbers[ROW_ONE, COLUMNS - 1] == numbers[row,COLUMNS - 1 - row]) 
                         {
-                            valueCount++;
-                            if(valueCount == VALUE_COUNT_MAX)
-                            {
-                                valueCount = 0;
-                                columnOneMatch = true;
-                            }
+                            diagonalWinCheck++;
                         }
-                        else 
+                          
+                        if(diagonalWinCheck == ROWS)
                         {
-                            valueCount = 0;
-                            break;
-                        }
-                    }
-
-                    //Check top row
-                    for(int j = 0; j < numbers.GetLength(1); j++)
-                    {
-                        if(numbers[ROW_ONE,j] == numbers[ROW_ONE,CELL_ONE])
-                        {     
-                           valueCount++;
-                            if(valueCount == VALUE_COUNT_MAX)
-                            {
-                                valueCount = 0;
-                                topRowMatch = true;
-                            }
-                        }
-                        else 
-                        {
-                            valueCount = 0;
-                            break;
-                        }
+                            diagonalWinCount++;
+                            win = true;
+                        }              
                     }
                     
-                    //Check middle row
-                    for(int j = 0; j < numbers.GetLength(1); j++)
-                    {
-                        if(numbers[ROW_TWO,j] == numbers[ROW_TWO,CELL_ONE])
-                        {           
-                            valueCount++;
-                            if(valueCount == VALUE_COUNT_MAX)
-                            {
-                                valueCount = 0;
-                                middleRowMatch = true;
-                            }
-                        }
-                        else 
-                        {
-                            valueCount = 0;
-                            break;
-                        }
+                    //If all numbers match then set jackpot to true
+                    if(rowWinCount == 3 && columnWinCount == 3 && diagonalWinCount == 2){
+                        jackpot = true;
                     }
-
-                    //Check bottom row
-                    for(int j = 0; j < numbers.GetLength(1); j++)
-                    {
-                        if(numbers[ROW_THREE,j] == numbers[ROW_THREE,CELL_ONE])
-                        {
-                            valueCount++;
-                            if(valueCount == VALUE_COUNT_MAX)
-                            {
-                                valueCount = 0;
-                                bottomRowMatch = true;
-                            }
-                        }
-                        else 
-                        {
-                            valueCount = 0;
-                            break;
-                        }
-                    }
-
-                    //Diagonal match
-                    for(int j = 0; j < numbers.GetLength(1); j++)
-                    {
-                        if(numbers[ROW_TWO, CELL_TWO] == numbers[ROW_ONE,CELL_ONE] 
-                        && numbers[ROW_THREE, CELL_THREE] == numbers[ROW_ONE,CELL_ONE])
-                        {
-                            diagonalMatch = true;
-                        }
-
-                        if(numbers[ROW_TWO, CELL_TWO] == numbers[ROW_ONE,CELL_THREE] 
-                        && numbers[ROW_THREE, CELL_ONE] == numbers[ROW_ONE,CELL_THREE])
-                        {
-                            diagonalMatch = true;
-                        } 
-                    }
-
-                    //If horrizontal, vertical and diagonal matches are found jackpot condition is met
-                    if(topRowMatch && middleRowMatch && bottomRowMatch && diagonalMatch
-                    && columnOneMatch && columnTwoMatch && columnThreeMatch)
-                    {
-                        win = true;
-                        double winAmount = bet * 11;
-                        money = money + winAmount;
-                        Console.WriteLine($"\t Jackpot You won: ${winAmount}");
-                        break;
-                    }
-
-                    if(topRowMatch || middleRowMatch || bottomRowMatch || diagonalMatch
-                    || columnOneMatch || columnTwoMatch || columnThreeMatch)
-                    {
-                        win = true;
-                        double winAmount = bet * 2;
-                        money += winAmount;
-                        Console.WriteLine($"\t You won: ${winAmount}");
-                        break;
-                    }
+                }
+                
+                //If win is true and jackpot is false multiply bet by WIN_MULTIPLIER
+                if(win && jackpot)
+                {
+                    Console.WriteLine($"\t JACKPOT!!! You won {bet * JACKPOT_MULTIPLIER}");
+                    money += bet * JACKPOT_MULTIPLIER;
+                }
+                
+                //If win is true and jackpot is false multiply bet by WIN_MULTIPLIER
+                if(win && !jackpot){
+                    Console.WriteLine($"\t Winner!!! You won {bet * WIN_MULTIPLIER}");
+                    money += bet * WIN_MULTIPLIER;
                 }
 
                 //If valueCount is less then 3 subtract bet amount from the total money 
@@ -258,7 +220,7 @@ namespace SlotMachine
                 //If money is less then 1, end the game.
                 if(money < 1)
                 {
-                    Console.WriteLine("No more Money Available");
+                    Console.WriteLine("\t No more Money Available");
                     break;
                 }
 
