@@ -18,6 +18,11 @@ namespace SlotMachine
             const double MIN_BET = 1;
             const double WIN_MULTIPLIER = 2;
             const double JACKPOT_MULTIPLIER = 10;
+            const char EXIT_GAME = 'n';
+            const char SINGLE_LINE_MODE = 's';
+            const char MULTI_LINE_MODE = 'm';
+            const int CONST_TWO = 2;
+            const int CONST_THREE = 3;
             
             double money;
             char playingMode;
@@ -38,21 +43,22 @@ namespace SlotMachine
                     continue;
                 }
 
-                //If money is less then 1 continue loop
-                if(money < 1){
+                if(money < 1)
+                {
                     Console.WriteLine("\t Please enter a valid number");
                     continue;
                 }
 
+                //Break out of loop if none of the conditions are matched
                 break;
             }
 
             while(true)
             {
                 Console.Write("\t Press S for Signle Line Mode or M for Multi-Line Mode: ");
-                playingMode = Console.ReadKey().KeyChar;
+                playingMode = Char.ToLower(Console.ReadKey().KeyChar);
                 Console.WriteLine();
-                if(!playingMode.Equals('m') && !playingMode.Equals('s'))
+                if(!playingMode.Equals(MULTI_LINE_MODE) && !playingMode.Equals(SINGLE_LINE_MODE))
                 {
                     Console.WriteLine("\t Please enter S or M");
                     continue;
@@ -193,7 +199,7 @@ namespace SlotMachine
                     }
                     
                     //If all numbers match then set jackpot to true
-                    if(rowWinCount == 3 && columnWinCount == 3 && diagonalWinCount == 2){
+                    if(rowWinCount == CONST_THREE && columnWinCount == CONST_THREE && diagonalWinCount == CONST_TWO){
                         jackpot = true;
                     }
                 }
@@ -226,8 +232,8 @@ namespace SlotMachine
 
                 //Prompt user to place another bet
                 Console.Write("\t Place another bet (Y/N): ");
-                char betAgain = Console.ReadKey().KeyChar;
-                if(betAgain.Equals('n'))
+                char betAgain = Char.ToLower(Console.ReadKey().KeyChar);
+                if(betAgain.Equals(EXIT_GAME))
                 {
                     break;
                 }
