@@ -37,13 +37,7 @@ namespace SlotMachine
                 string inputMoney = Console.ReadLine();
                 bool isInputMoneyDouble = Double.TryParse(inputMoney, out money);
                 //If input money isn't a double continue loop
-                if(!isInputMoneyDouble)
-                {
-                    Console.WriteLine("\t Please enter a valid number");
-                    continue;
-                }
-
-                if(money < 1)
+                if(!isInputMoneyDouble || money < 1)
                 {
                     Console.WriteLine("\t Please enter a valid number");
                     continue;
