@@ -21,6 +21,8 @@ namespace SlotMachine
             const char EXIT_GAME = 'n';
             const char SINGLE_LINE_MODE = 's';
             const char MULTI_LINE_MODE = 'm';
+            const int CONST_ZERO = 0;
+            const int CONST_ONE = 1;
             const int CONST_TWO = 2;
             const int CONST_THREE = 3;
             
@@ -37,7 +39,7 @@ namespace SlotMachine
                 string inputMoney = Console.ReadLine();
                 bool isInputMoneyDouble = Double.TryParse(inputMoney, out money);
                 //If input money isn't a double continue loop
-                if(!isInputMoneyDouble || money < 1)
+                if(!isInputMoneyDouble || money < CONST_ONE)
                 {
                     Console.WriteLine("\t Please enter a valid number");
                     continue;
@@ -88,9 +90,9 @@ namespace SlotMachine
                 }
 
                 //Populate array and print thr table to the console
-                for(int i = 0; i < numbers.GetLength(0); i++)
+                for(int i = 0; i < numbers.GetLength(CONST_ZERO); i++)
                 {
-                    for(int j = 0; j < numbers.GetLength(1); j++)
+                    for(int j = 0; j < numbers.GetLength(CONST_ONE); j++)
                     {  
                         numbers[i,j] = rnd.Next(RANGE_START,RANGE_END);
                         Console.Write($"\t {numbers[i,j]} \t");
@@ -103,7 +105,7 @@ namespace SlotMachine
                     int middleRowCheck = 0;
                     for(int row = 0; row < ROWS; row++)
                     {
-                        if(numbers[((ROWS -1 ) / 2), COLUMN_ONE] == numbers[((ROWS -1 ) / 2), row])
+                        if(numbers[((ROWS -CONST_ONE ) / CONST_TWO), COLUMN_ONE] == numbers[((ROWS -CONST_ONE ) / CONST_TWO), row])
                         {
                             middleRowCheck++;
                         }
@@ -180,7 +182,7 @@ namespace SlotMachine
                     for(int row = 0; row < ROWS; row++)
                     {
                         //Check diagonal win
-                        if(numbers[ROW_ONE, COLUMNS - 1] == numbers[row,COLUMNS - 1 - row]) 
+                        if(numbers[ROW_ONE, COLUMNS - CONST_ONE] == numbers[row,COLUMNS - CONST_ONE - row]) 
                         {
                             diagonalWinCheck++;
                         }
@@ -218,7 +220,7 @@ namespace SlotMachine
                 }
 
                 //If money is less then 1, end the game.
-                if(money < 1)
+                if(money < CONST_ONE)
                 {
                     Console.WriteLine("\t No more Money Available");
                     break;
