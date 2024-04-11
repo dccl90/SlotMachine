@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Immutable;
-using System.ComponentModel;
-using System.ComponentModel.Design;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks.Dataflow;
-using Microsoft.VisualBasic;
-
+﻿using System.Collections.Immutable;
 namespace SlotMachine
 {
     internal class Program
