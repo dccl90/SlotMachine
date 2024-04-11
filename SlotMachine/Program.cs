@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks.Dataflow;
+using Microsoft.VisualBasic;
 
 namespace SlotMachine
 {
     internal class Program
     {
-        static void Main(string[] args)
-        {
+
             const int ROWS = 3;
             const int COLUMNS = 3;
             const int RANGE_START = 1;
@@ -18,19 +20,21 @@ namespace SlotMachine
             const double MIN_BET = 1;
             const double WIN_MULTIPLIER = 2;
             const double JACKPOT_MULTIPLIER = 10;
+            const double MINOR_JACKPOT_MULTIPLIER = 5;
             const char EXIT_GAME = 'n';
-            const char SINGLE_LINE_MODE = 's';
-            const char MULTI_LINE_MODE = 'm';
             const int CONST_ZERO = 0;
             const int CONST_ONE = 1;
             const int CONST_TWO = 2;
             const int CONST_THREE = 3;
-            
+        
+        static void Main(string[] args)
+        { 
+            ImmutableList<char> gameModes = ImmutableList.Create('R', 'C', 'D', 'E');
             double money;
             char playingMode;
             Random rnd = new Random();
             int[,] numbers = new int[ROWS,COLUMNS]; 
-            
+
             Console.Clear();
             
             while(true)
@@ -51,14 +55,21 @@ namespace SlotMachine
 
             while(true)
             {
-                Console.Write("\t Press S for Signle Line Mode or M for Multi-Line Mode: ");
-                playingMode = Char.ToLower(Console.ReadKey().KeyChar);
+                Console.WriteLine("\t Please enter your playing mode.");
+                Console.WriteLine("\t Enter R to play all rows");
+                Console.WriteLine("\t Enter C to play all columns");
+                Console.WriteLine("\t Enter D to play all diagonals");
+                Console.WriteLine("\t Enter E to play everything");
+                Console.Write("\t Enter Mode: ");
+                playingMode = Char.ToUpper(Console.ReadKey().KeyChar);
                 Console.WriteLine();
-                if(!playingMode.Equals(MULTI_LINE_MODE) && !playingMode.Equals(SINGLE_LINE_MODE))
+                if(!gameModes.Contains(playingMode))
                 {
-                    Console.WriteLine("\t Please enter S or M");
+                    Console.Clear();
+                    Console.WriteLine("\t Please enter R, C, D or E");
                     continue;
                 }
+                Console.Clear();
                 break;
             }
 
@@ -66,6 +77,7 @@ namespace SlotMachine
             {
                 Console.WriteLine("\t #####Lucky Dynasty Slots#####");
                 Console.WriteLine($"\t Available Money: ${money}");
+                Console.WriteLine($"\t Game Mode: {playingMode}");
                 Console.Write("\t Enter Bet Amount {Min $1.00}: $");
                 string inputBet = Console.ReadLine();
                 bool isInputBetDouble = Double.TryParse(inputBet, out double bet);
@@ -100,55 +112,24 @@ namespace SlotMachine
                     Console.WriteLine();
                 }
 
-                bool win = false;
-                if(playingMode.Equals('s')){
-                    int middleRowCheck = 0;
-                    for(int row = 0; row < ROWS; row++)
-                    {
-                        if(numbers[((ROWS -CONST_ONE ) / CONST_TWO), COLUMN_ONE] == numbers[((ROWS -CONST_ONE ) / CONST_TWO), row])
-                        {
-                            middleRowCheck++;
-                        }
-                        else 
-                        {
-                            middleRowCheck = 0;
-                        }
-
-                        if(middleRowCheck == COLUMNS)
-                        {
-                            win = true;
-                        }
-                    }    
-                }
-
-                
+                bool win = false;  
                 bool jackpot = false;
+                bool minorJackpot = false;
                 int columnWinCheck;
                 int rowWinCheck;
                 int columnWinCount = 0;
                 int rowWinCount = 0;
                 int diagonalWinCount = 0;
-                if(playingMode.Equals('m'))
+
+                //Loop over Rows
+                if(playingMode == gameModes[0] || playingMode == gameModes[3])
                 {
                     for(int row = 0; row < ROWS; row++)
                     {   
-                        columnWinCheck = 0;
-                        rowWinCheck = 0;
+                        rowWinCheck = 0; 
                         for(int column = 0; column < COLUMNS; column++)
                         {
-                            //Check Columns for Win
-                            if(numbers[row, 0] == numbers[column,row])
-                            {
-                                columnWinCheck++;
-                            }
-
-                            if(columnWinCheck == COLUMNS)
-                            {
-                                columnWinCount++;
-                                win = true;
-                            }
-
-                            //Check Rows for Win
+                            
                             if(numbers[row,0] == numbers[row,column])
                             {
                                 rowWinCheck++;
@@ -159,18 +140,55 @@ namespace SlotMachine
                                 rowWinCount++;
                                 win = true;
                             }
+
+                            if(rowWinCount == ROWS)
+                            {
+                                minorJackpot = true;
+                            }   
                         }
                     }
+                }
+                
+                //Loop over Columns
+                if(playingMode == gameModes[1] || playingMode == gameModes[3])
+                {
+                    for(int row = 0; row < ROWS; row++)
+                    {   
+                        columnWinCheck = 0;
+                        for(int column = 0; column < COLUMNS; column++)
+                        {
 
+                            if(numbers[CONST_ZERO, row] == numbers[column,row])
+                            {
+                                columnWinCheck++;
+                                
+                            }
+                            
+                            if(columnWinCheck == COLUMNS)
+                            {
+                                columnWinCount++;
+                                win = true;
+                            }
+
+                            if(columnWinCount == COLUMNS)
+                            {
+                                minorJackpot = true;
+                            }   
+                        }
+                    }
+                }
+
+                //Loop over diagonal lines 
+                if(playingMode == gameModes[2] || playingMode == gameModes[3]){
                     int diagonalWinCheck = 0;
                     for(int row = 0; row < ROWS; row++)
                     {
-                        //Check diagonal win
+                        
                         if(numbers[ROW_ONE, COLUMN_ONE] == numbers[row,row]) 
                         {
                             diagonalWinCheck++;
                         }
-                          
+                            
                         if(diagonalWinCheck == ROWS)
                         {
                             diagonalWinCount++;
@@ -186,29 +204,41 @@ namespace SlotMachine
                         {
                             diagonalWinCheck++;
                         }
-                          
+                            
                         if(diagonalWinCheck == ROWS)
                         {
                             diagonalWinCount++;
                             win = true;
-                        }              
-                    }
-                    
-                    //If all numbers match then set jackpot to true
-                    if(rowWinCount == CONST_THREE && columnWinCount == CONST_THREE && diagonalWinCount == CONST_TWO){
-                        jackpot = true;
+                        } 
+
+                        if(diagonalWinCount == CONST_TWO)
+                        {
+                            minorJackpot = true;
+                        }             
                     }
                 }
-                
-                //If win is true and jackpot is false multiply bet by WIN_MULTIPLIER
-                if(win && jackpot)
+
+                //Check if jackpot was hit
+                if(  
+                    rowWinCount == ROWS &&
+                    columnWinCount == COLUMNS && 
+                    diagonalWinCount == CONST_TWO
+                )
                 {
+                    jackpot = true;
                     Console.WriteLine($"\t JACKPOT!!! You won {bet * JACKPOT_MULTIPLIER}");
                     money += bet * JACKPOT_MULTIPLIER;
                 }
                 
+                //Check if minor jackpot was hit
+                if(minorJackpot && !jackpot)
+                {
+                    Console.WriteLine($"\t MINOR JACKPOT!!! You won {bet * MINOR_JACKPOT_MULTIPLIER}");
+                    money += bet * MINOR_JACKPOT_MULTIPLIER;
+                }
+                
                 //If win is true and jackpot is false multiply bet by WIN_MULTIPLIER
-                if(win && !jackpot){
+                if(win && !jackpot && !minorJackpot){
                     Console.WriteLine($"\t Winner!!! You won {bet * WIN_MULTIPLIER}");
                     money += bet * WIN_MULTIPLIER;
                 }
