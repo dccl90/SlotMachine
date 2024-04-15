@@ -18,11 +18,13 @@ namespace SlotMachine
             const int CONST_ZERO = 0;
             const int CONST_ONE = 1;
             const int CONST_TWO = 2;
-            const int CONST_THREE = 3;
+            const char ALL_ROWS = 'R';
+            const char ALL_COLUMNS = 'C';
+            const char DIAGONAL_LINES = 'D';
+            const char ALL_LINES = 'E';
         
         static void Main(string[] args)
         { 
-            ImmutableList<char> gameModes = ImmutableList.Create('R', 'C', 'D', 'E');
             double money;
             char playingMode;
             Random rnd = new Random();
@@ -55,10 +57,15 @@ namespace SlotMachine
                 Console.WriteLine("\t Enter E to play everything");
                 Console.Write("\t Enter Mode: ");
                 playingMode = Char.ToUpper(Console.ReadKey().KeyChar);
-                Console.WriteLine();
-                if(!gameModes.Contains(playingMode))
+                Console.WriteLine(playingMode.Equals(ALL_ROWS));
+                if(
+                    !playingMode.Equals(ALL_ROWS) && 
+                    !playingMode.Equals(ALL_COLUMNS) && 
+                    !playingMode.Equals(DIAGONAL_LINES) && 
+                    !playingMode.Equals(ALL_LINES)
+                )
                 {
-                    Console.Clear();
+                    //Console.Clear();
                     Console.WriteLine("\t Please enter R, C, D or E");
                     continue;
                 }
@@ -115,7 +122,7 @@ namespace SlotMachine
                 int diagonalWinCount = 0;
 
                 //Loop over Rows
-                if(playingMode == gameModes[0] || playingMode == gameModes[3])
+                if(playingMode.Equals(ALL_ROWS) || playingMode.Equals(ALL_LINES))
                 {
                     for(int row = 0; row < ROWS; row++)
                     {   
@@ -143,7 +150,7 @@ namespace SlotMachine
                 }
                 
                 //Loop over Columns
-                if(playingMode == gameModes[1] || playingMode == gameModes[3])
+                if(playingMode.Equals(ALL_COLUMNS) || playingMode.Equals(ALL_LINES))
                 {
                     for(int row = 0; row < ROWS; row++)
                     {   
@@ -172,7 +179,7 @@ namespace SlotMachine
                 }
 
                 //Loop over diagonal lines 
-                if(playingMode == gameModes[2] || playingMode == gameModes[3]){
+                if(playingMode.Equals(DIAGONAL_LINES) || playingMode.Equals(ALL_LINES)){
                     int diagonalWinCheck = 0;
                     for(int row = 0; row < ROWS; row++)
                     {
