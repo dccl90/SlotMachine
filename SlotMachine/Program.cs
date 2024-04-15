@@ -51,13 +51,12 @@ namespace SlotMachine
             while(true)
             {
                 Console.WriteLine("\t Please enter your playing mode.");
-                Console.WriteLine("\t Enter R to play all rows");
-                Console.WriteLine("\t Enter C to play all columns");
-                Console.WriteLine("\t Enter D to play all diagonals");
-                Console.WriteLine("\t Enter E to play everything");
+                Console.WriteLine($"\t Enter {ALL_ROWS} to play all rows");
+                Console.WriteLine($"\t Enter {ALL_COLUMNS} to play all columns");
+                Console.WriteLine($"\t Enter {DIAGONAL_LINES} to play all diagonals");
+                Console.WriteLine($"\t Enter {ALL_LINES} to play everything");
                 Console.Write("\t Enter Mode: ");
                 playingMode = Char.ToUpper(Console.ReadKey().KeyChar);
-                Console.WriteLine(playingMode.Equals(ALL_ROWS));
                 if(
                     !playingMode.Equals(ALL_ROWS) && 
                     !playingMode.Equals(ALL_COLUMNS) && 
@@ -65,8 +64,8 @@ namespace SlotMachine
                     !playingMode.Equals(ALL_LINES)
                 )
                 {
-                    //Console.Clear();
-                    Console.WriteLine("\t Please enter R, C, D or E");
+                    Console.Clear();
+                    Console.WriteLine($"\t Please enter {ALL_ROWS}, {ALL_COLUMNS}, {DIAGONAL_LINES} or {ALL_LINES}");
                     continue;
                 }
                 Console.Clear();
