@@ -8,7 +8,7 @@ namespace SlotMachine
             const int COLUMNS = 3;
             const int DIAGONAL_LINES = 2;
             const int RANGE_START = 1;
-            const int RANGE_END = 10;
+            const int RANGE_END = 3;
             const double MIN_BET = 1;
             const double WIN_MULTIPLIER = 2;
             const double JACKPOT_MULTIPLIER = 10;
@@ -72,7 +72,7 @@ namespace SlotMachine
                 Console.WriteLine("\t #####Lucky Dynasty Slots#####");
                 Console.WriteLine($"\t Available Money: ${money}");
                 Console.WriteLine($"\t Game Mode: {playingMode}");
-                Console.Write("\t Enter Bet Amount {Min $1.00}: $");
+                Console.Write($"\t Enter Bet Amount (Min Bet ${MIN_BET}): $");
                 string inputBet = Console.ReadLine();
                 bool isInputBetDouble = Double.TryParse(inputBet, out double bet);
                 
@@ -94,6 +94,12 @@ namespace SlotMachine
                     Console.WriteLine("\t Bet amount exceeds available money");
                     continue;
                 }
+                Console.Clear();
+                money -= bet;
+                Console.WriteLine("\t #####Lucky Dynasty Slots#####");
+                Console.WriteLine($"\t Available Money: ${money}");
+                Console.WriteLine($"\t Game Mode: {playingMode}");
+                Console.WriteLine($"\t Enter Bet Amount (Min Bet ${MIN_BET}): ${bet}");
 
                 //Populate array and print thr table to the console
                 for(int i = 0; i < numbers.GetLength(0); i++)
@@ -232,12 +238,6 @@ namespace SlotMachine
                 if(win && !jackpot && !minorJackpot){
                     Console.WriteLine($"\t Winner!!! You won {bet * WIN_MULTIPLIER}");
                     money += bet * WIN_MULTIPLIER;
-                }
-
-                //If valueCount is less then 3 subtract bet amount from the total money 
-                if(!win)
-                {
-                    money -= bet;
                 }
 
                 //If money is less then 1, end the game.
