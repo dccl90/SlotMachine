@@ -6,21 +6,17 @@ namespace SlotMachine
 
             const int ROWS = 3;
             const int COLUMNS = 3;
+            const int DIAGONAL_LINES = 2;
             const int RANGE_START = 1;
             const int RANGE_END = 10;
-            const int ROW_ONE = 0;
-            const int COLUMN_ONE = 0;
             const double MIN_BET = 1;
             const double WIN_MULTIPLIER = 2;
             const double JACKPOT_MULTIPLIER = 10;
             const double MINOR_JACKPOT_MULTIPLIER = 5;
             const char EXIT_GAME = 'n';
-            const int CONST_ZERO = 0;
-            const int CONST_ONE = 1;
-            const int CONST_TWO = 2;
             const char ALL_ROWS = 'R';
             const char ALL_COLUMNS = 'C';
-            const char DIAGONAL_LINES = 'D';
+            const char ALL_DIAGONALS = 'D';
             const char ALL_LINES = 'E';
         
         static void Main(string[] args)
@@ -29,7 +25,7 @@ namespace SlotMachine
             char playingMode;
             Random rnd = new Random();
             int[,] numbers = new int[ROWS,COLUMNS]; 
-
+    
             Console.Clear();
             
             while(true)
@@ -38,12 +34,11 @@ namespace SlotMachine
                 string inputMoney = Console.ReadLine();
                 bool isInputMoneyDouble = Double.TryParse(inputMoney, out money);
                 //If input money isn't a double continue loop
-                if(!isInputMoneyDouble || money < CONST_ONE)
+                if(!isInputMoneyDouble || money < MIN_BET)
                 {
                     Console.WriteLine("\t Please enter a valid number");
                     continue;
                 }
-
                 //Break out of loop if none of the conditions are matched
                 break;
             }
@@ -53,19 +48,19 @@ namespace SlotMachine
                 Console.WriteLine("\t Please enter your playing mode.");
                 Console.WriteLine($"\t Enter {ALL_ROWS} to play all rows");
                 Console.WriteLine($"\t Enter {ALL_COLUMNS} to play all columns");
-                Console.WriteLine($"\t Enter {DIAGONAL_LINES} to play all diagonals");
+                Console.WriteLine($"\t Enter {ALL_DIAGONALS} to play all diagonals");
                 Console.WriteLine($"\t Enter {ALL_LINES} to play everything");
                 Console.Write("\t Enter Mode: ");
                 playingMode = Char.ToUpper(Console.ReadKey().KeyChar);
                 if(
                     !playingMode.Equals(ALL_ROWS) && 
                     !playingMode.Equals(ALL_COLUMNS) && 
-                    !playingMode.Equals(DIAGONAL_LINES) && 
+                    !playingMode.Equals(ALL_DIAGONALS) && 
                     !playingMode.Equals(ALL_LINES)
                 )
                 {
                     Console.Clear();
-                    Console.WriteLine($"\t Please enter {ALL_ROWS}, {ALL_COLUMNS}, {DIAGONAL_LINES} or {ALL_LINES}");
+                    Console.WriteLine($"\t Please enter {ALL_ROWS}, {ALL_COLUMNS}, {ALL_DIAGONALS} or {ALL_LINES}");
                     continue;
                 }
                 Console.Clear();
@@ -101,9 +96,9 @@ namespace SlotMachine
                 }
 
                 //Populate array and print thr table to the console
-                for(int i = 0; i < numbers.GetLength(CONST_ZERO); i++)
+                for(int i = 0; i < numbers.GetLength(0); i++)
                 {
-                    for(int j = 0; j < numbers.GetLength(CONST_ONE); j++)
+                    for(int j = 0; j < numbers.GetLength(1); j++)
                     {  
                         numbers[i,j] = rnd.Next(RANGE_START,RANGE_END);
                         Console.Write($"\t {numbers[i,j]} \t");
@@ -127,24 +122,23 @@ namespace SlotMachine
                     {   
                         rowWinCheck = 0; 
                         for(int column = 0; column < COLUMNS; column++)
-                        {
-                            
+                        {  
                             if(numbers[row,0] == numbers[row,column])
                             {
                                 rowWinCheck++;
                             }
-
-                            if(rowWinCheck == ROWS)
-                            {
-                                rowWinCount++;
-                                win = true;
-                            }
-
-                            if(rowWinCount == ROWS)
-                            {
-                                minorJackpot = true;
-                            }   
                         }
+
+                        if(rowWinCheck == ROWS)
+                        {
+                            rowWinCount++;
+                            win = true;
+                        }
+
+                        if(rowWinCount == ROWS)
+                        {
+                            minorJackpot = true;
+                        }   
                     }
                 }
                 
@@ -156,34 +150,32 @@ namespace SlotMachine
                         columnWinCheck = 0;
                         for(int column = 0; column < COLUMNS; column++)
                         {
-
-                            if(numbers[CONST_ZERO, row] == numbers[column,row])
+                            if(numbers[0, row] == numbers[column,row])
                             {
-                                columnWinCheck++;
-                                
+                                columnWinCheck++;       
                             }
-                            
-                            if(columnWinCheck == COLUMNS)
-                            {
-                                columnWinCount++;
-                                win = true;
-                            }
-
-                            if(columnWinCount == COLUMNS)
-                            {
-                                minorJackpot = true;
-                            }   
                         }
+
+                        if(columnWinCheck == COLUMNS)
+                        {
+                            columnWinCount++;
+                            win = true;
+                        }
+
+                        if(columnWinCount == COLUMNS)
+                        {
+                            minorJackpot = true;
+                        }   
                     }
                 }
 
                 //Loop over diagonal lines 
-                if(playingMode.Equals(DIAGONAL_LINES) || playingMode.Equals(ALL_LINES)){
+                if(playingMode.Equals(ALL_DIAGONALS) || playingMode.Equals(ALL_LINES)){
                     int diagonalWinCheck = 0;
                     for(int row = 0; row < ROWS; row++)
                     {
                         
-                        if(numbers[ROW_ONE, COLUMN_ONE] == numbers[row,row]) 
+                        if(numbers[0, 0] == numbers[row,row]) 
                         {
                             diagonalWinCheck++;
                         }
@@ -199,7 +191,7 @@ namespace SlotMachine
                     for(int row = 0; row < ROWS; row++)
                     {
                         //Check diagonal win
-                        if(numbers[ROW_ONE, COLUMNS - CONST_ONE] == numbers[row,COLUMNS - CONST_ONE - row]) 
+                        if(numbers[0, COLUMNS - 1] == numbers[row,COLUMNS - 1 - row]) 
                         {
                             diagonalWinCheck++;
                         }
@@ -210,7 +202,7 @@ namespace SlotMachine
                             win = true;
                         } 
 
-                        if(diagonalWinCount == CONST_TWO)
+                        if(diagonalWinCount == DIAGONAL_LINES)
                         {
                             minorJackpot = true;
                         }             
@@ -221,7 +213,7 @@ namespace SlotMachine
                 if(  
                     rowWinCount == ROWS &&
                     columnWinCount == COLUMNS && 
-                    diagonalWinCount == CONST_TWO
+                    diagonalWinCount == DIAGONAL_LINES
                 )
                 {
                     jackpot = true;
@@ -249,14 +241,14 @@ namespace SlotMachine
                 }
 
                 //If money is less then 1, end the game.
-                if(money < CONST_ONE)
+                if(money < MIN_BET)
                 {
                     Console.WriteLine("\t No more Money Available");
                     break;
                 }
 
                 //Prompt user to place another bet
-                Console.Write("\t Place another bet (Y/N): ");
+                Console.Write("\t Press N to exit: ");
                 char betAgain = Char.ToLower(Console.ReadKey().KeyChar);
                 if(betAgain.Equals(EXIT_GAME))
                 {
