@@ -6,7 +6,7 @@ namespace SlotMachine
         public const int COLUMNS = 3;
         public const int DIAGONAL_LINES = 2;
         public const int RANGE_START = 1;
-        public const int RANGE_END = 3;
+        public const int RANGE_END = 10;
         public const double MIN_BET = 1;
         public const double WIN_MULTIPLIER = 2;
         public const double JACKPOT_MULTIPLIER = 10;
