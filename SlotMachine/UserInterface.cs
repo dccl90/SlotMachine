@@ -67,6 +67,55 @@ namespace SlotMachine
             return playingMode;
         }
 
+        public static double InputBet(double inputMoney, char playingMode){
+            string inputBet;
+            double bet = 0;
+            bool isInputBetValid = false;
+            do
+            {
+                ClearConsole();
+                Console.WriteLine("\t #####Lucky Dynasty Slots#####");
+                Console.WriteLine($"\t Available Money: ${inputMoney}");
+                Console.WriteLine($"\t Game Mode: {playingMode}");
+                Console.Write($"\t Enter Bet Amount (Min Bet ${Constants.MIN_BET}): $");
+                inputBet = Console.ReadLine();
+
+                isInputBetValid = SlotMachineLogic.ValidateInputBet(inputBet, inputMoney);
+
+                if(isInputBetValid)
+                {
+                    bet = Double.Parse(inputBet);
+                    inputMoney = SlotMachineLogic.SubtractBetFromAvailableMoney(bet, inputMoney);
+                    ClearConsole();
+                    Console.WriteLine("\t #####Lucky Dynasty Slots#####");
+                    Console.WriteLine($"\t Available Money: ${inputMoney}");
+                    Console.WriteLine($"\t Game Mode: {playingMode}");
+                    Console.Write($"\t Enter Bet Amount (Min Bet ${Constants.MIN_BET}): ${bet}");
+                    Console.WriteLine();
+                }
+                if(!isInputBetValid)
+                {
+                    PrintInvalidBetMessage();
+                    continue;
+                }
+            }
+            while(!isInputBetValid);
+
+            return bet;
+        }
+
+        public static void PrintNumbers(int[,] numbers)
+        {
+            for(int i = 0; i < numbers.GetLength(0); i++)
+            {
+                for(int j = 0; j < numbers.GetLength(1); j++)
+                {  
+                    Console.Write($"\t {numbers[i,j]} \t");
+                }
+                Console.WriteLine();
+            }
+        }
+
         /// <summary>
         /// Prints a message indicating the playing mode is invalid
         /// </summary>
@@ -74,6 +123,12 @@ namespace SlotMachine
         {
             ClearConsole();
             Console.WriteLine($"\t Please enter {Constants.ALL_ROWS}, {Constants.ALL_COLUMNS}, {Constants.ALL_DIAGONALS} or {Constants.ALL_LINES}");
+            PrintPressAnyKeyToContinue();
+        }
+
+        private static void PrintInvalidBetMessage()
+        {
+            Console.WriteLine("\t Bet must be a number greater then $1.00");
             PrintPressAnyKeyToContinue();
         }
 

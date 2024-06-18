@@ -21,59 +21,20 @@ namespace SlotMachine
         
         static void Main(string[] args)
         { 
-            Random rnd = new Random();
-            int[,] numbers = new int[ROWS,COLUMNS]; 
+
     
-            Console.Clear();
             
             double inputMoney = UserInterface.InputMoney();
             char playingMode = UserInterface.SelectPlayingMode();
+            
+            
 
             while(true)
             {
-                Console.WriteLine("\t #####Lucky Dynasty Slots#####");
-                Console.WriteLine($"\t Available Money: ${inputMoney}");
-                Console.WriteLine($"\t Game Mode: {playingMode}");
-                Console.Write($"\t Enter Bet Amount (Min Bet ${MIN_BET}): $");
-                string inputBet = Console.ReadLine();
-                bool isInputBetDouble = Double.TryParse(inputBet, out double bet);
-                
-                //If the input bet is not a double continue
-                if(!isInputBetDouble){
-                    Console.WriteLine("\t Please enter a valid number");
-                    continue;
-                }
-
-                //If bet is less then the minimum then continue
-                if(bet < MIN_BET){
-                    Console.WriteLine("\t Bet must be greater then $1.00");
-                    continue;
-                }
-
-                //If bet is greater then the available money continue
-                if(bet > inputMoney)
-                {
-                    Console.WriteLine("\t Bet amount exceeds available money");
-                    continue;
-                }
-                Console.Clear();
-                inputMoney -= bet;
-                Console.WriteLine("\t #####Lucky Dynasty Slots#####");
-                Console.WriteLine($"\t Available Money: ${inputMoney}");
-                Console.WriteLine($"\t Game Mode: {playingMode}");
-                Console.WriteLine($"\t Enter Bet Amount (Min Bet ${MIN_BET}): ${bet}");
-
-                //Populate array and print thr table to the console
-                for(int i = 0; i < numbers.GetLength(0); i++)
-                {
-                    for(int j = 0; j < numbers.GetLength(1); j++)
-                    {  
-                        numbers[i,j] = rnd.Next(RANGE_START,RANGE_END);
-                        Console.Write($"\t {numbers[i,j]} \t");
-                    }
-                    Console.WriteLine();
-                }
-
+                double bet = UserInterface.InputBet(inputMoney, playingMode);
+                SlotMachineLogic.GenerateNumbers();
+                int[,] numbers = SlotMachineLogic.GetNumbers();
+                UserInterface.PrintNumbers(numbers);
                 bool win = false;  
                 bool jackpot = false;
                 bool minorJackpot = false;
