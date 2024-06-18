@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlotMachine", "SlotMachine\SlotMachine.csproj", "{3C58CEF6-3E6C-4066-A852-5359701AD15D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacToe", "..\..\module-five\TicTacToe\TicTacToe.csproj", "{608B772D-0B45-4F1F-BB3F-4B1E98FB6B4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{3C58CEF6-3E6C-4066-A852-5359701AD15D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C58CEF6-3E6C-4066-A852-5359701AD15D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C58CEF6-3E6C-4066-A852-5359701AD15D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{608B772D-0B45-4F1F-BB3F-4B1E98FB6B4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{608B772D-0B45-4F1F-BB3F-4B1E98FB6B4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{608B772D-0B45-4F1F-BB3F-4B1E98FB6B4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{608B772D-0B45-4F1F-BB3F-4B1E98FB6B4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

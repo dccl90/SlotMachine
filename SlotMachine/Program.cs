@@ -21,27 +21,14 @@ namespace SlotMachine
         
         static void Main(string[] args)
         { 
-            double money;
             char playingMode;
             Random rnd = new Random();
             int[,] numbers = new int[ROWS,COLUMNS]; 
     
             Console.Clear();
             
-            while(true)
-            {
-                Console.Write("\t Add Money : $");
-                string inputMoney = Console.ReadLine();
-                bool isInputMoneyDouble = Double.TryParse(inputMoney, out money);
-                //If input money isn't a double continue loop
-                if(!isInputMoneyDouble || money < MIN_BET)
-                {
-                    Console.WriteLine("\t Please enter a valid number");
-                    continue;
-                }
-                //Break out of loop if none of the conditions are matched
-                break;
-            }
+            double inputMoney = UserInterface.InputMoney();
+            
 
             while(true)
             {
@@ -70,7 +57,7 @@ namespace SlotMachine
             while(true)
             {
                 Console.WriteLine("\t #####Lucky Dynasty Slots#####");
-                Console.WriteLine($"\t Available Money: ${money}");
+                Console.WriteLine($"\t Available Money: ${inputMoney}");
                 Console.WriteLine($"\t Game Mode: {playingMode}");
                 Console.Write($"\t Enter Bet Amount (Min Bet ${MIN_BET}): $");
                 string inputBet = Console.ReadLine();
@@ -89,15 +76,15 @@ namespace SlotMachine
                 }
 
                 //If bet is greater then the available money continue
-                if(bet > money)
+                if(bet > inputMoney)
                 {
                     Console.WriteLine("\t Bet amount exceeds available money");
                     continue;
                 }
                 Console.Clear();
-                money -= bet;
+                inputMoney -= bet;
                 Console.WriteLine("\t #####Lucky Dynasty Slots#####");
-                Console.WriteLine($"\t Available Money: ${money}");
+                Console.WriteLine($"\t Available Money: ${inputMoney}");
                 Console.WriteLine($"\t Game Mode: {playingMode}");
                 Console.WriteLine($"\t Enter Bet Amount (Min Bet ${MIN_BET}): ${bet}");
 
@@ -224,24 +211,24 @@ namespace SlotMachine
                 {
                     jackpot = true;
                     Console.WriteLine($"\t JACKPOT!!! You won {bet * JACKPOT_MULTIPLIER}");
-                    money += bet * JACKPOT_MULTIPLIER;
+                    inputMoney += bet * JACKPOT_MULTIPLIER;
                 }
                 
                 //Check if minor jackpot was hit
                 if(minorJackpot && !jackpot)
                 {
                     Console.WriteLine($"\t MINOR JACKPOT!!! You won {bet * MINOR_JACKPOT_MULTIPLIER}");
-                    money += bet * MINOR_JACKPOT_MULTIPLIER;
+                    inputMoney += bet * MINOR_JACKPOT_MULTIPLIER;
                 }
                 
                 //If win is true and jackpot is false multiply bet by WIN_MULTIPLIER
                 if(win && !jackpot && !minorJackpot){
                     Console.WriteLine($"\t Winner!!! You won {bet * WIN_MULTIPLIER}");
-                    money += bet * WIN_MULTIPLIER;
+                    inputMoney += bet * WIN_MULTIPLIER;
                 }
 
                 //If money is less then 1, end the game.
-                if(money < MIN_BET)
+                if(inputMoney < MIN_BET)
                 {
                     Console.WriteLine("\t No more Money Available");
                     break;
