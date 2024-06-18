@@ -21,38 +21,13 @@ namespace SlotMachine
         
         static void Main(string[] args)
         { 
-            char playingMode;
             Random rnd = new Random();
             int[,] numbers = new int[ROWS,COLUMNS]; 
     
             Console.Clear();
             
             double inputMoney = UserInterface.InputMoney();
-            
-
-            while(true)
-            {
-                Console.WriteLine("\t Please enter your playing mode.");
-                Console.WriteLine($"\t Enter {ALL_ROWS} to play all rows");
-                Console.WriteLine($"\t Enter {ALL_COLUMNS} to play all columns");
-                Console.WriteLine($"\t Enter {ALL_DIAGONALS} to play all diagonals");
-                Console.WriteLine($"\t Enter {ALL_LINES} to play everything");
-                Console.Write("\t Enter Mode: ");
-                playingMode = Char.ToUpper(Console.ReadKey().KeyChar);
-                if(
-                    !playingMode.Equals(ALL_ROWS) && 
-                    !playingMode.Equals(ALL_COLUMNS) && 
-                    !playingMode.Equals(ALL_DIAGONALS) && 
-                    !playingMode.Equals(ALL_LINES)
-                )
-                {
-                    Console.Clear();
-                    Console.WriteLine($"\t Please enter {ALL_ROWS}, {ALL_COLUMNS}, {ALL_DIAGONALS} or {ALL_LINES}");
-                    continue;
-                }
-                Console.Clear();
-                break;
-            }
+            char playingMode = UserInterface.SelectPlayingMode();
 
             while(true)
             {

@@ -1,6 +1,6 @@
 namespace SlotMachine
 {
-    internal class Constatns
+    internal class Constants
     {
         public const int ROWS = 3;
         public const int COLUMNS = 3;
@@ -13,8 +13,8 @@ namespace SlotMachine
         public const double MINOR_JACKPOT_MULTIPLIER = 5;
         public const char EXIT_GAME = 'n';
         public const char ALL_ROWS = 'R';
-        const char ALL_COLUMNS = 'C';
-        const char ALL_DIAGONALS = 'D';
-        const char ALL_LINES = 'E';
+        public const char ALL_COLUMNS = 'C';
+        public const char ALL_DIAGONALS = 'D';
+        public const char ALL_LINES = 'E';
     }
 }
