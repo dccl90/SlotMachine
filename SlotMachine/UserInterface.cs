@@ -67,13 +67,20 @@ namespace SlotMachine
             return playingMode;
         }
 
+        /// <summary>
+        /// A method for entering the bet ammound
+        /// </summary>
+        /// <param name="inputMoney">The money input by the player</param>
+        /// <param name="playingMode">The game mode selected by the player</param>
         public static double InputBet(double inputMoney, char playingMode){
             string inputBet;
             double bet = 0;
             bool isInputBetValid = false;
             do
             {
+                
                 ClearConsole();
+                Console.WriteLine(inputMoney);
                 Console.WriteLine("\t #####Lucky Dynasty Slots#####");
                 Console.WriteLine($"\t Available Money: ${inputMoney}");
                 Console.WriteLine($"\t Game Mode: {playingMode}");
@@ -104,6 +111,9 @@ namespace SlotMachine
             return bet;
         }
 
+        /// <summary>
+        /// Prints the numbers array to the console
+        /// </summary>
         public static void PrintNumbers(int[,] numbers)
         {
             for(int i = 0; i < numbers.GetLength(0); i++)
