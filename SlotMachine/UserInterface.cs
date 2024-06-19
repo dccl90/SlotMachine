@@ -10,16 +10,14 @@ namespace SlotMachine
         /// Asks the user to input a value and checks if it is a valid
         /// </summary>
         /// <returns>Returns the money input by the user</returns>
-        public static double InputMoney()
+        public static void InputMoney()
         {
             bool isInputValid;
-            double availableMoney = 0;
-            string inputMoney;
             do
             {
                 ClearConsole();
                 Console.Write("\t Add Money : $");
-                inputMoney = Console.ReadLine();
+                string inputMoney = Console.ReadLine();
                 isInputValid = SlotMachineLogic.ValidateInput(inputMoney);
                 if(!isInputValid)
                 {
@@ -27,11 +25,10 @@ namespace SlotMachine
                     continue;
                 }
 
-                availableMoney = Double.Parse(inputMoney);
+                double availableMoney = Double.Parse(inputMoney);
                 SlotMachineLogic.SetAvailableMoney(availableMoney);
             } 
             while (!isInputValid);
-            return availableMoney;
         }
 
         /// <summary>
@@ -48,46 +45,46 @@ namespace SlotMachine
         /// Asks the user to input the playing mode and checks if it is a valid
         /// </summary>
         /// <returns>Returns the playing mode as a char</returns>
-        public static Char SelectPlayingMode()
+        public static void SelectPlayingMode()
         {
-            char playingMode;
-            while(true)
+            bool isPlayingModeValid;
+            do
             {
-                
+
                 PrintPlayingOptions();
                 Console.Write("\t Enter Mode: ");
-                playingMode = Char.ToUpper(Console.ReadKey().KeyChar);
-                bool isPlayingModeValid = SlotMachineLogic.ValidatePlayingMode(playingMode);
-                if(!isPlayingModeValid)
+                char playingMode = Char.ToUpper(Console.ReadKey().KeyChar);
+                isPlayingModeValid = SlotMachineLogic.ValidatePlayingMode(playingMode);
+                if (!isPlayingModeValid)
                 {
                     PrintInvalidPlayingModeMessage();
                     continue;
                 }
                 SlotMachineLogic.SetPlayingMode(playingMode);
                 break;
-            }
-            return playingMode;
+            } 
+            while (!isPlayingModeValid);
+
         }
 
         /// <summary>
         /// A method for entering the bet ammound
         /// </summary>
-        public static double InputBet(){
-            string inputBet;
-            double availableMoney = SlotMachineLogic.GetAvailableMoney();
-            double bet = 0;
+        public static void InputBet()
+        {
+            SlotMachineLogic.GetAvailableMoney();
             bool isInputBetValid = false;
             do
             {
                 PrintGameHeader();
                 Console.Write($"\t Enter Bet Amount (Min Bet ${Constants.MIN_BET}): $");
-                inputBet = Console.ReadLine();
+                string inputBet = Console.ReadLine();
                 isInputBetValid = SlotMachineLogic.ValidateInputBet(inputBet);
                 if(isInputBetValid)
                 {
-                    bet = Double.Parse(inputBet);
+                    double bet = Double.Parse(inputBet);
                     SlotMachineLogic.SetBet(bet);
-                    availableMoney = SlotMachineLogic.SubtractBetFromAvailableMoney();
+                    SlotMachineLogic.SubtractBetFromAvailableMoney();
                     PrintGameHeader();
                     Console.Write($"\t Enter Bet Amount (Min Bet ${Constants.MIN_BET}): ${bet}");
                     Console.WriteLine();
@@ -99,8 +96,6 @@ namespace SlotMachine
                 }
             }
             while(!isInputBetValid);
-
-            return bet;
         }
 
         /// <summary>
@@ -181,8 +176,6 @@ namespace SlotMachine
         /// <summary>
         /// A method for printing the game header disaplying the playing mode and available money
         /// </summary>
-        /// <param name="inputMoney">The money input by the player</param>
-        /// <param name="playingMode">The game mode selected by the player</param>
         private static void PrintGameHeader()
         {
             char playingMode = SlotMachineLogic.GetPlayingMode();

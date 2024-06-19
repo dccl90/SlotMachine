@@ -8,8 +8,8 @@ namespace SlotMachine
         static void Main(string[] args)
         { 
             
-            double inputMoney = UserInterface.InputMoney();
-            char playingMode = UserInterface.SelectPlayingMode();  
+            UserInterface.InputMoney();
+            UserInterface.SelectPlayingMode();  
 
             while(true)
             {
