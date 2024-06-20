@@ -16,20 +16,9 @@ namespace SlotMachine
                 UserInterface.InputBet();
                 UserInterface.PrintNumbers();
                 bool win = SlotMachineLogic.CheckWin();
-                bool jackpot = SlotMachineLogic.GetJackpot();
-                bool minorJackpot = SlotMachineLogic.GetMinorJackpot();
                 SlotMachineLogic.MulitplyMoney(win);
-                if(jackpot)
-                {
-                    UserInterface.PrintJackpotMessage();
-                }
-
-                if(minorJackpot && !jackpot)
-                {
-                    UserInterface.PrintMinorJackpotMessage();
-                }
-
-                if(win && !jackpot && !minorJackpot)
+                
+                if(win)
                 {
                     UserInterface.PrintWinnerMessage();
                 }   

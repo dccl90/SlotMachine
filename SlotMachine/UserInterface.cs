@@ -128,17 +128,32 @@ namespace SlotMachine
         /// <summary>
         /// A method for printing the winner message
         /// </summary>
-        public static void PrintWinnerMessage(){
+        public static void PrintWinnerMessage(){ 
             double bet = SlotMachineLogic.GetBet();
-            Console.WriteLine($"\t WINNER!!! You won {bet * Constants.WIN_MULTIPLIER}");
+            bool jackpot = SlotMachineLogic.GetJackpot();
+            bool minorJackpot = SlotMachineLogic.GetMinorJackpot();
+            if(jackpot)
+            {
+                PrintJackpotMessage(bet);
+            }
+
+            if(minorJackpot && !jackpot)
+            {
+                PrintMinorJackpotMessage(bet);
+            }
+            else 
+            {
+                Console.WriteLine($"\t WINNER!!! You won {bet * Constants.WIN_MULTIPLIER}");
+            }
+            
         }
 
         /// <summary>
         /// A method for printing the minor jackpot message
         /// </summary>
-        public static void PrintMinorJackpotMessage()
+        ///<param name="bet">The amount of money placed on the bet<param>
+        private static void PrintMinorJackpotMessage(double bet)
         {
-            double bet = SlotMachineLogic.GetBet();
             Console.WriteLine($"\t MINOR JACKPOT!!! You won {bet * Constants.MINOR_JACKPOT_MULTIPLIER}");
         }
 
@@ -146,9 +161,9 @@ namespace SlotMachine
         /// <summary>
         /// A method for printing the jackpot message
         /// </summary>
-        public static void PrintJackpotMessage()
+        ///<param name="bet">The amount of money placed on the bet<param>
+        private static void PrintJackpotMessage(double bet)
         {
-            double bet = SlotMachineLogic.GetBet();
             Console.WriteLine($"\t JACKPOT!!! You won {bet * Constants.JACKPOT_MULTIPLIER}");
         }
 
